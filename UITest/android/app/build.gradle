@@ -131,11 +131,12 @@ def reactNativeArchitectures() {
 
 android {
     ndkVersion rootProject.ext.ndkVersion
+    compileSdk compileSdkVersion
 
-    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "com.uitest"
+        compileSdkVersion 31
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -277,6 +278,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-vector-icons')
 }
 
 if (isNewArchitectureEnabled()) {
@@ -311,3 +314,5 @@ def isNewArchitectureEnabled() {
     // - Set an environment variable `ORG_GRADLE_PROJECT_newArchEnabled=true`
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
