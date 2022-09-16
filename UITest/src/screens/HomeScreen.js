@@ -11,7 +11,9 @@ const HomeScreen = ({navigation}) => {
             <UIHeader/>
             <View style={styles.bodyContainer}>
                 <View style={styles.body}>
-                    <TouchableOpacity style={styles.addButton}>
+                    <TouchableOpacity 
+                        style={styles.addButton}
+                        onPress={()=>navigation.navigate('CreateScreen')}>
                         <Icon name='add-circle' color='white' size={21} style={styles.addIcon}/>
                         <Text style={styles.addText}>Tambah New Matrix</Text>
                     </TouchableOpacity>

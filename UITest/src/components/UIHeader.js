@@ -1,14 +1,16 @@
 import React from 'react'
 import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native'
-import Icon from 'react-native-vector-icons/Feather'
+import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color'
 
 const UIHeader = (props) => {
     const {iconShow, iconPress} = props
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.icon}>
-                {iconShow && <Icon name='arrow-left-circle' color={'white'} size={21.88} />}
+            <TouchableOpacity 
+                style={styles.icon}
+                onPress={iconPress}>
+                {iconShow && <Icon name='arrow-back-circle' color={'white'} size={27}/>}
             </TouchableOpacity>
             <Text style={styles.headerText}>Aprroval Matrix</Text>
 
