@@ -280,6 +280,7 @@ dependencies {
     }
 
     implementation project(':react-native-vector-icons')
+    implementation project(':react-native-picker_picker')
 }
 
 if (isNewArchitectureEnabled()) {

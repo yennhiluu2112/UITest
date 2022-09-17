@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         backgroundColor: Color.branding_orange,
     },
     bodyContainer:{
-        flex: 88,
+        flex: 92,
         backgroundColor: Color.branding_orange    
     },
     body:{

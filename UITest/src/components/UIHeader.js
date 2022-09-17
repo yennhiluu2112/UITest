@@ -21,7 +21,7 @@ const UIHeader = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 10,
+        flex: 8,
         backgroundColor: Color.branding_orange,
         justifyContent: 'center',
         alignItems: 'center',
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     },
     icon:{
         position: 'absolute',
+        padding: 10,
         left:'6.25%',
         right: '6.25%',
     }
