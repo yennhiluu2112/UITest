@@ -1,8 +1,25 @@
-import React from 'react'
-import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color' 
-const ItemApproval = () => {
+import { SERVER_URL } from '../utils/Constant'
+import * as Method from '../utils/Method'
+
+const ItemApproval = (props) => {
+    const item = props.itemApproval
+    const [approvers, setApprovers] = useState()
+    const loadApprovers = async (id) => {
+        try{
+            const resp = await Method.makeRequest(SERVER_URL+`approvalmatrix/getListByMatrixId.php?id_matrix=${id}`,'GET',null)
+            setApprovers(resp.data)
+        }
+        catch(e){
+            console.log('Error:',e)
+        }   
+    }
+    useEffect(()=>{
+        loadApprovers(item.id)
+    }, [item])
     return (
         <View style={styles.approvalContainer}>
         <View style={styles.approvalItem}>
@@ -12,30 +29,31 @@ const ItemApproval = () => {
                     <View style={styles.smallRangeView}>
                         <Text style={styles.text1}>Minimum</Text>
                         <Text style={styles.text2}>IDR</Text>
-                        <Text style={styles.text3}>0</Text>
+                        <Text style={styles.text3}>{item.minimum_range}</Text>
                     </View>
                     <View style={styles.smallRangeView}>
                         <Text style={styles.text1}>Maximum</Text>
                         <Text style={styles.text2}>IDR</Text>
-                        <Text style={styles.text3}>50,000</Text>
+                        <Text style={styles.text3}>{item.maximum_range}</Text>
                     </View>
                 </View>
             </View>
             <View style={styles.line_}></View>
             <View style={styles.rangeView}>
                 <Text style={styles.titleRange}>Number Of Approval</Text>
-                <Text style={styles.textNumber}>2</Text>
+                <Text style={styles.textNumber}>{item.approval_number}</Text>
             </View>
             <View style={styles.line_}></View>
-            <View style={styles.approverView}>
-                <Text style={styles.titleRange}>Approval 1</Text>
-                <Text style={styles.textNumber}>GROUPMG1, GROUPMG2</Text>
-            </View>
-            <View style={styles.approverView}>
-                <Text style={styles.titleRange}>Approval 1</Text>
-                <Text style={styles.textNumber}>GROUPMG1, GROUPMG2</Text>
-            </View>
-
+            <FlatList 
+                data={approvers}
+                keyExtractor={item => item.id}
+                renderItem={({item, index})=>
+                    <View style={styles.approverView}>
+                        <Text style={styles.titleRange}>Approver {index+1}</Text>
+                        <Text style={styles.textNumber}>{item.name_approval}</Text>
+                    </View>
+            }
+            />
         </View>
     </View>
     )
@@ -44,6 +62,7 @@ const ItemApproval = () => {
 const styles = StyleSheet.create({
     approvalContainer:{
         width: '100%',
+        marginBottom: 10,
     },
     approvalItem:{
         borderRadius: 15,
@@ -54,37 +73,35 @@ const styles = StyleSheet.create({
     },
     rangeView:{
         flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     titleRange:{
-        width: '50%',
         fontSize: 12,
         fontWeight:'400',
-        color: Color.text_black
+        color: Color.text_black,
     },
     smallRangeView:{
         marginStart: 15,
-        width: '50%',
         flexDirection: 'row',
     },
     text1:{
-        width: '60%',
+        width: 60,
         fontSize: 12,
         marginEnd: 5,
         color: Color.branding_blue
     },
     text2:{
-        width: '20%',
+        width: 20,
         fontSize: 12,
         marginEnd: 5,
         color: Color.branding_blue
     },
     text3:{
-        width: '40%',
-        fontSize: 12,
-        marginEnd: 5,
+        width: 50,
         textAlign: 'right',
+        fontSize: 12,
         color: Color.branding_blue,
-        fontWeight: '700'
+        fontWeight: '700',
     },
     line_:{
         width: '100%',
@@ -93,16 +110,16 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     textNumber:{
-        width: '50%',
+        flex:5,
         marginEnd: 5,
         fontSize: 12,
         color: Color.branding_blue,
         textAlign: 'right'
-
     },
     approverView:{
         flexDirection: 'row',
-        marginBottom: 15
+        marginBottom: 15,
+        flex: 10,
     }
 
 })

@@ -1,27 +1,59 @@
-import React from 'react'
-import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native'
+import React, {useEffect, useState} from 'react'
+import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color'
+import ItemApproval from './ItemApproval'
+import * as Method from '../utils/Method'
+import { SERVER_URL } from '../utils/Constant'
+const ItemFeature = (props) => {
+    const {item, onPress} = props
+    const [listMatrix, setListMatrix] = useState([])
+    const colorSelect = item.isSelected ? Color.branding_orange : Color.branding_gray
+    const iconName = item.isSelected ? "chevron-up" : "chevron-down"
 
-const ItemFeature = () => {
+    const loadMatrixByFeatureId = async (id) => {
+        try{
+            const resp = await Method.makeRequest(SERVER_URL+`matrix/getListByFeatureId.php?id=${id}`,'GET',null)
+            setListMatrix(resp.data)
+            console.log("a:",resp.data)
+        }
+        catch(e){
+            console.log('Error:',e)
+        }
+    }
+
+    useEffect(()=>{
+        if(item.isSelected){
+            loadMatrixByFeatureId(item.id)
+        }
+        else{
+            setListMatrix([])
+        }
+    }, [item])
+
+
     return (
         <View>
-            <TouchableOpacity style={styles.featureContainer}>
-            <View style={styles.featureView}>
-                <Text style={styles.featureName}>Default</Text>
-                <View style={styles.line_}></View>
-                <Text style={styles.featureName}>Default</Text>
-                <Icon style={styles.iconArrow} name='chevron-down-outline' color={Color.text_black} size={20}/>
-            </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.featureContainer}>
-                <View style={[styles.featureView,{borderColor: Color.branding_orange}]}>
-                    <Text style={[styles.featureName,{color: Color.branding_orange}]}>Transfer Online</Text>
-                    <View style={[styles.line_,{backgroundColor: Color.branding_orange}]}></View>
-                    <Text style={[styles.featureName,{color: Color.branding_orange}]}>Transfer Online</Text>
-                    <Icon style={styles.iconArrow} name='chevron-up' color={Color.branding_orange} size={20}/>
+            <TouchableOpacity 
+                style={styles.featureContainer}
+                onPress={onPress}>
+                <View style={[styles.featureView,{borderColor: colorSelect}]}>
+                    <Text style={[styles.featureName,{color: colorSelect}]}>{item.name_feature}</Text>
+                    <View style={[styles.line_,{backgroundColor: colorSelect}]}></View>
+                    <Text style={[styles.featureName,{color: colorSelect}]}>{item.name_feature}</Text>
+                    <Icon style={styles.iconArrow} name={iconName} color={colorSelect} size={20}/>
                 </View>
             </TouchableOpacity>
+            {listMatrix && 
+                <FlatList
+                    data={listMatrix}
+                    keyExtractor={(itemApproval) => itemApproval.id}
+                    renderItem={({item, index})=>{
+                            return <ItemApproval itemApproval={item}/>
+                        }    
+                    }
+                />
+            }
 
         </View>
         

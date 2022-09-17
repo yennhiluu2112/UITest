@@ -1,11 +1,27 @@
-import React from 'react'
-import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color' 
-import { WIDTH } from '../utils/Constant'
+import { SERVER_URL } from '../utils/Constant'
 import { UIHeader, ItemFeature, ItemApproval } from '../components'
+import * as Method from '../utils/Method'
 
 const HomeScreen = ({navigation}) => {
+    const [features, setFeatures] = useState()
+    const loadFeatures = async () => {
+        try{
+            const resp = await Method.makeRequest(SERVER_URL+'feature/getAll.php','GET',null)
+            setFeatures(resp.data)
+        }
+        catch(e){
+            console.log('Error:',e)
+        }
+        
+    }
+    useEffect(()=>{
+        loadFeatures()
+    },[])
+
     return (
         <SafeAreaView style={styles.container}>
             <UIHeader/>
@@ -18,8 +34,28 @@ const HomeScreen = ({navigation}) => {
                         <Text style={styles.addText}>Tambah New Matrix</Text>
                     </TouchableOpacity>
                     <View style={styles.line}></View>
-                    <ItemFeature/>
-                    <ItemApproval/>
+                    <FlatList 
+                        data={features}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({item, index})=>
+                            <ItemFeature 
+                                item={item}
+                                onPress={()=>{
+                                    let newFeatures = features.map(eachFeature => {
+                                        if (item.id == eachFeature.id){
+                                            return {...eachFeature, isSelected: true}
+                                        }
+                                        else{
+                                            return {...eachFeature, isSelected: false}
+                                        }
+                                    })
+                                    setFeatures(newFeatures)
+                                }}
+                            />
+                        }
+                    />
+                    
                    
                 </View>
             </View>
