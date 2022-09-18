@@ -7,7 +7,6 @@ import * as Method from '../utils/Method'
 import { HEIGHT, SERVER_URL } from '../utils/Constant'
 
 const CreateScreen = ({navigation, route}) => {
-    console.log("Create: ", route.params.render)
     const [isUpdate, setUpdate] = useState(false)
     const [id, setId] = useState('')
     const [approvalNum, setApprovalNum] = useState('')

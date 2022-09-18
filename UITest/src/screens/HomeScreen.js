@@ -8,7 +8,6 @@ import * as Method from '../utils/Method'
 import ConfirmModal from '../components/ConfirmModal'
 
 const HomeScreen = ({navigation,route}) => {
-    console.log("House: ",route.params.render)
     const [features, setFeatures] = useState()
     const [modalVisible, setModalVisible] = useState(false)
     const [listener, setLitsener] = useState(()=>()=>{})

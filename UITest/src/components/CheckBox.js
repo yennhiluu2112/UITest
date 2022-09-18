@@ -63,14 +63,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(0,0,0,0.5)',
     },
     container1: {
-        width: WIDTH * 0.8,
-        height: HEIGHT * 0.5,
+        width: WIDTH * 0.7,
+        height: HEIGHT * 0.4,
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
-        borderWidth: 0.7,
-        borederColor: Color.branding_orange
+        borderWidth: 0.5,
     },
     smallContainer: {
         flexDirection: 'row',
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 15,
-        marginTop: 10,
+        marginTop: 30,
     },
     textClose: {
         fontWeight: 'bold',
