@@ -5,7 +5,7 @@ import CustomButton from "./CustomButton";
 import InputRange from "./InputRange";
 import InputField from "./InputField";
 import CustomPicker from "./CustomPicker";
-
+import CheckBox from "./CheckBox";
 export {
     UIHeader,
     ItemFeature,
@@ -13,5 +13,6 @@ export {
     CustomButton,
     InputRange,
     InputField,
-    CustomPicker
+    CustomPicker,
+    CheckBox
 }

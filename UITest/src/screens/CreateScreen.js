@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import { View , Text, StyleSheet, SafeAreaView, TextInput, ScrollView, TouchableOpacity} from 'react-native'
 import { Picker } from '@react-native-picker/picker'
-import { UIHeader, CustomButton, InputRange, InputField, CustomPicker } from '../components'
+import { UIHeader, CustomButton, InputRange, InputField, CheckBox } from '../components'
 import Color from '../utils/Color'
 import * as Method from '../utils/Method'
 import { HEIGHT, SERVER_URL } from '../utils/Constant'
 
 const CreateScreen = ({navigation, route}) => {
+    console.log("Create: ", route.params.render)
     const [isUpdate, setUpdate] = useState(false)
     const [id, setId] = useState('')
     const [approvalNum, setApprovalNum] = useState('')
@@ -20,23 +21,45 @@ const CreateScreen = ({navigation, route}) => {
 
     const [selectedFeature, setSelectedFeature] = useState('')
     const [features, setFeatures] = useState([])
-    const [number, setNumber] = useState([])
-    const [approvers, setApprovers] = useState()
+    const [selected, setSelected] = useState([])
+    const [approvers, setApprovers] = useState([])
+
     const isValidationOK = name.length>0 && maximum>minimum && approvalNum>0
 
+    const [visible, setVisible] = useState(false)
 
     const loadData = async () => {
         try{
             const resp1 = await Method.makeRequest(SERVER_URL+'feature/getAll.php','GET',null)
             setFeatures(resp1.data)
+            const resp2 = await Method.makeRequest(SERVER_URL+'approval/getAll.php','GET',null)
+            setApprovers(resp2.data)
         }
         catch(e){
             console.log('Error:',e)
         }
     }
 
-    const addData = async (approvers) => {
+    const loadApprovers = async (id) => {
         try{
+            const resp = await Method.makeRequest(SERVER_URL+`approval/getListByMatrixId.php?id_matrix=${id}`,'GET',null)
+            list = []
+            resp.data.map(item => {
+                list.push(item.id)
+            })
+            setSelected(list)
+        }
+        catch(e){
+            console.log('Error:',e)
+        }
+    }
+    const addData = async () => {
+        try{
+            let list = []
+            selected.map(item=>{
+                list.push(+item)
+            })
+            console.log(list)
             if(!isUpdate){
                 const resp = await Method.makeRequest(SERVER_URL+'matrix/create.php','POST',
                 {
@@ -45,7 +68,7 @@ const CreateScreen = ({navigation, route}) => {
                     maximum : maximum,
                     approval_number : approvalNum,
                     feature: selectedFeature.id,
-                    id_approvals: approvers
+                    id_approvals: list
                 })
                 if(resp.message=='success'){
                     alert('Successfully created matrix')
@@ -53,10 +76,12 @@ const CreateScreen = ({navigation, route}) => {
                     setMinimum('')
                     setMaximum('')
                     setApprovalNum('')
+                    setSelectedFeature('')
+                    setSelected([])
                 }
             }
             else{
-                const resp = await Method.makeRequest(SERVER_URL+'matrix/update.php','POST',
+                const resp = await Method.makeRequest(SERVER_URL+'matrix/update.php','PUT',
                 {
                     id_matrix:id,
                     name : name,
@@ -64,6 +89,7 @@ const CreateScreen = ({navigation, route}) => {
                     maximum : maximum,
                     approval_number : approvalNum,
                     feature: selectedFeature.id,
+                    id_approvals: list
                 })
                 if(resp.message=='success'){
                     alert('Successfully updated matrix')
@@ -91,31 +117,27 @@ const CreateScreen = ({navigation, route}) => {
                     if(item.id == itemUpdate.feature){
                         setSelectedFeature(item)
                     }
-                })   
-            }
+                })
+                loadApprovers(itemUpdate.id)
+                console.log('Selected: ', selected)   
+            } 
         }
         catch(e){
             console.log('Error:',e)
         }
 
-
     },[])
-
-    useEffect(()=>{
-        const list=[]
-        for(i=0; i<approvalNum; i++){
-            list.push(i)
-        }
-        setNumber(list)
-    },[approvalNum])
 
     return (
         <SafeAreaView style={styles.container}>
+            <CheckBox options={approvers} visible={visible} setVisible={setVisible} selected={selected} setSelected={setSelected}/>
             <ScrollView showsVerticalScrollIndicator={false}>
 
             <UIHeader 
                 iconShow={true}
-                iconPress={()=>navigation.navigate("HomeScreen")}/>
+                iconPress={()=>{navigation.goBack()
+                    route.params.render=!route.params.render
+                }}/>
 
             <View style={styles.body}>
                 <Text style={styles.title}>{isUpdate ? "Update" : "Create New"} Approval Matrix</Text>
@@ -158,8 +180,8 @@ const CreateScreen = ({navigation, route}) => {
                             setMinimum(text)
                         }}
                         value={minimum}/>
-
-                    <View style={{marginBottom: 44}}/>
+        
+                    <Text style={styles.errorText}></Text>
 
                     <InputRange 
                         label={'Maximum'}
@@ -183,25 +205,25 @@ const CreateScreen = ({navigation, route}) => {
                         keyboardType={'numeric'}/>
                     <Text style={styles.errorText}>{errorApprovalNum}</Text>
 
-                    {approvalNum>0 && number.map(({item,index}) => 
-                        {
-                            return (
-                            <View key={index} style={styles.inputItem} >
-                                <Text style={styles.label}>Approver</Text>
-                                <View style={styles.pickerView}>
-                                    <CustomPicker/>
-                                </View>
-                            </View>
-                        )}
-                    )}
-
+                    <View style={styles.inputItem}>
+                        <Text style={styles.label}>Approvers</Text>
+                        <TouchableOpacity 
+                            style={styles.inputView}
+                            onPress={()=>{setVisible(true)}}>
+                            <Text style={styles.text} numberOfLines={1}>SELECT APPROVER</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
                     <View style={{marginTop: 20}}></View>
 
                     <CustomButton 
                         label={isUpdate ? 'UPDATE' : 'ADD TO LIST'} 
-                        isValidationOK={isValidationOK}
+                        isValidationOK={isUpdate ? true : isValidationOK}
                         onPress={()=>{
-                            addData(approvers)
+                            addData()
+                            if(isUpdate){
+                                navigation.navigate('HomeScreen', {render:!route.params.render})
+                            }
                         }}
                     />
 
@@ -216,13 +238,17 @@ const CreateScreen = ({navigation, route}) => {
                     />
             </View>
             </ScrollView>
+
+
+
         </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 100,
+        flex: 1,
         backgroundColor: 'white',
+        justifyContent: 'center',
     },
     body:{
         paddingHorizontal: 30,
@@ -275,7 +301,7 @@ const styles = StyleSheet.create({
     errorText:{
         color: 'red', 
         fontSize: 13, 
-        marginBottom: 44, 
+        marginBottom: 35, 
         marginTop:5,
         marginStart: 20
     },
@@ -285,6 +311,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginTop: 8
     },
+    text:{
+        paddingVertical: 19,
+        color: Color.branding_blue,
+        fontWeight: '400',
+    }
 
 })
 export default CreateScreen

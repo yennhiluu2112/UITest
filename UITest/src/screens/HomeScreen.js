@@ -7,7 +7,8 @@ import { UIHeader, ItemFeature, ItemApproval } from '../components'
 import * as Method from '../utils/Method'
 import ConfirmModal from '../components/ConfirmModal'
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation,route}) => {
+    console.log("House: ",route.params.render)
     const [features, setFeatures] = useState()
     const [modalVisible, setModalVisible] = useState(false)
     const [listener, setLitsener] = useState(()=>()=>{})
@@ -24,11 +25,11 @@ const HomeScreen = ({navigation}) => {
     }
     useEffect(()=>{
         loadFeatures()
-    },[])
+    },[route.params?.render])
 
     const clickDelete = (id) => {
         setDeleteID(id)
-        setLitsener(deleteAM(id))
+        setLitsener(()=>()=>deleteAM(id))
         setModalVisible(true)
     }
 
@@ -51,7 +52,7 @@ const HomeScreen = ({navigation}) => {
                 <View style={styles.body}>
                     <TouchableOpacity 
                         style={styles.addButton}
-                        onPress={()=>navigation.navigate('CreateScreen')}>
+                        onPress={()=>{navigation.navigate('CreateScreen',{render:route.params.render})}}>
                         <Icon name='add-circle' color='white' size={21} style={styles.addIcon}/>
                         <Text style={styles.addText}>Tambah New Matrix</Text>
                     </TouchableOpacity>
@@ -63,6 +64,7 @@ const HomeScreen = ({navigation}) => {
                         keyExtractor={(item) => item.id}
                         renderItem={({item, index})=>
                             <ItemFeature 
+                                route={route}
                                 clickDelete={clickDelete}
                                 navigation_={navigation}
                                 item={item}

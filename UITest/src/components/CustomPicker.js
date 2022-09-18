@@ -10,15 +10,7 @@ const CustomPicker = (props) => {
     const [selectedValue, setSelectedValue] = useState()
     const [index, setIndex]=useState(0)
 
-    const loadData = async () => {
-        try{
-            const resp2 = await Method.makeRequest(SERVER_URL+'approval/getAll.php','GET',null)
-            setApprovals(resp2.data)
-        }
-        catch(e){
-            console.log('Error:',e)
-        }
-    }
+  
 
 
     useEffect(()=>{

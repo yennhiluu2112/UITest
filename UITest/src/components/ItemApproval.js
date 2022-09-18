@@ -9,6 +9,7 @@ const ItemApproval = (props) => {
     const item = props.itemApproval
     const navigation = props.navigation_
     const clickDelete = props.clickDelete
+    const route = props.route
     const [approvers, setApprovers] = useState()    
 
     const loadApprovers = async (id) => {
@@ -22,7 +23,7 @@ const ItemApproval = (props) => {
     }
 
     const navigateUpdate = (itemUpdate, approvalNumber) => {
-        navigation.navigate('CreateScreen', {itemUpdate})
+        navigation.navigate('CreateScreen', {itemUpdate, render: route.params.render})
     }
 
 
@@ -53,7 +54,7 @@ const ItemApproval = (props) => {
                 <Text style={styles.textNumber}>{item.approval_number}</Text>
             </View>
             <View style={styles.line_}></View>
-            {approvers ? <FlatList 
+            <FlatList 
                 data={approvers}
                 keyExtractor={item => item.id}
                 renderItem={({item, index})=>
@@ -62,18 +63,7 @@ const ItemApproval = (props) => {
                         <Text style={styles.textNumber}>{item.name_approval}</Text>
                     </View>
             }
-            /> : <View>
-                <View style={styles.approverView}>
-                        <Text style={styles.titleRange}>Approver 1</Text>
-                        <Text style={styles.textNumber}>GROUPMG1, GROUPMG2</Text>
-                </View>
-                <View style={styles.approverView}>
-                        <Text style={styles.titleRange}>Approver 1</Text>
-                        <Text style={styles.textNumber}>GROUPMG1,GROUPMG2, GROUPMG3</Text>
-                </View>
-                </View>
-                
-            }
+            /> 
             <View style={{flexDirection:'row', justifyContent: 'flex-end'}}>
                 <TouchableOpacity 
                     style={styles.otherBtn}
