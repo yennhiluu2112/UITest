@@ -7,8 +7,8 @@ import * as Method from '../utils/Method'
 
 const ItemApproval = (props) => {
     const item = props.itemApproval
-    const deleteMatrix = props.delete
     const navigation = props.navigation_
+    const clickDelete = props.clickDelete
     const [approvers, setApprovers] = useState()    
 
     const loadApprovers = async (id) => {
@@ -53,7 +53,7 @@ const ItemApproval = (props) => {
                 <Text style={styles.textNumber}>{item.approval_number}</Text>
             </View>
             <View style={styles.line_}></View>
-            <FlatList 
+            {approvers ? <FlatList 
                 data={approvers}
                 keyExtractor={item => item.id}
                 renderItem={({item, index})=>
@@ -62,7 +62,18 @@ const ItemApproval = (props) => {
                         <Text style={styles.textNumber}>{item.name_approval}</Text>
                     </View>
             }
-            />
+            /> : <View>
+                <View style={styles.approverView}>
+                        <Text style={styles.titleRange}>Approver 1</Text>
+                        <Text style={styles.textNumber}>GROUPMG1, GROUPMG2</Text>
+                </View>
+                <View style={styles.approverView}>
+                        <Text style={styles.titleRange}>Approver 1</Text>
+                        <Text style={styles.textNumber}>GROUPMG1,GROUPMG2, GROUPMG3</Text>
+                </View>
+                </View>
+                
+            }
             <View style={{flexDirection:'row', justifyContent: 'flex-end'}}>
                 <TouchableOpacity 
                     style={styles.otherBtn}
@@ -72,7 +83,7 @@ const ItemApproval = (props) => {
                 <TouchableOpacity 
                     style={styles.otherBtn}
                     onPress={()=>{
-                        deleteMatrix(item.id)
+                        clickDelete(item.id)
                     }}
                 >
                     <Icon name='trash-outline' size={23} color={'red'}/>

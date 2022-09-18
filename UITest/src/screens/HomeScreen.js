@@ -5,9 +5,14 @@ import Color from '../utils/Color'
 import { SERVER_URL } from '../utils/Constant'
 import { UIHeader, ItemFeature, ItemApproval } from '../components'
 import * as Method from '../utils/Method'
+import ConfirmModal from '../components/ConfirmModal'
 
 const HomeScreen = ({navigation}) => {
     const [features, setFeatures] = useState()
+    const [modalVisible, setModalVisible] = useState(false)
+    const [listener, setLitsener] = useState(()=>()=>{})
+    const [deleteId, setDeleteID] = useState(()=>()=>{})
+
     const loadFeatures = async () => {
         try{
             const resp = await Method.makeRequest(SERVER_URL+'feature/getAll.php','GET',null)
@@ -21,8 +26,26 @@ const HomeScreen = ({navigation}) => {
         loadFeatures()
     },[])
 
+    const clickDelete = (id) => {
+        setDeleteID(id)
+        setLitsener(deleteAM(id))
+        setModalVisible(true)
+    }
+
+    const deleteAM = async (id) => {
+        try{
+            await Method.makeRequest(SERVER_URL+`matrix/delete.php`,'DELETE',{
+                id_matrix: id
+            }).then(loadFeatures())
+        }
+        catch(e){
+            console.log('Error:',e)
+        }   
+    }
+
     return (
             <SafeAreaView style={styles.container}>
+            <ConfirmModal visible={modalVisible} setVisible={setModalVisible} listener={listener}/>
             <UIHeader/>
             <View style={styles.bodyContainer}>
                 <View style={styles.body}>
@@ -34,11 +57,13 @@ const HomeScreen = ({navigation}) => {
                     </TouchableOpacity>
                     <View style={styles.line}></View>
                     <FlatList 
+                        clickDelete={clickDelete}
                         data={features}
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item) => item.id}
                         renderItem={({item, index})=>
                             <ItemFeature 
+                                clickDelete={clickDelete}
                                 navigation_={navigation}
                                 item={item}
                                 onPress={()=>{

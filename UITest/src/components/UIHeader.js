@@ -2,6 +2,7 @@ import React from 'react'
 import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color'
+import { HEIGHT } from '../utils/Constant'
 
 const UIHeader = (props) => {
     const {iconShow, iconPress} = props
@@ -13,7 +14,6 @@ const UIHeader = (props) => {
                 {iconShow && <Icon name='arrow-back-circle' color={'white'} size={27}/>}
             </TouchableOpacity>
             <Text style={styles.headerText}>Aprroval Matrix</Text>
-
         </View>
     )
 
@@ -21,7 +21,7 @@ const UIHeader = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 8,
+        height: HEIGHT*0.09,
         backgroundColor: Color.branding_orange,
         justifyContent: 'center',
         alignItems: 'center',
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '400',
         fontSize: 18,
+        textAlign: 'center',
     },
     icon:{
         position: 'absolute',

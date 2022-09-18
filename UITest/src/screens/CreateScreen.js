@@ -4,7 +4,7 @@ import { Picker } from '@react-native-picker/picker'
 import { UIHeader, CustomButton, InputRange, InputField, CustomPicker } from '../components'
 import Color from '../utils/Color'
 import * as Method from '../utils/Method'
-import { SERVER_URL } from '../utils/Constant'
+import { HEIGHT, SERVER_URL } from '../utils/Constant'
 
 const CreateScreen = ({navigation, route}) => {
     const [isUpdate, setUpdate] = useState(false)
@@ -111,14 +111,16 @@ const CreateScreen = ({navigation, route}) => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+
             <UIHeader 
                 iconShow={true}
                 iconPress={()=>navigation.navigate("HomeScreen")}/>
+
             <View style={styles.body}>
                 <Text style={styles.title}>{isUpdate ? "Update" : "Create New"} Approval Matrix</Text>
                 <View style={styles.line}></View>
 
-                <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                     <InputField 
                         label={'Approval Matrix Alias'} 
                         placeholder={'Input Matrix Name'}
@@ -133,7 +135,7 @@ const CreateScreen = ({navigation, route}) => {
                     <Text style={styles.errorText}>{errorName}</Text>
 
                     <View style={styles.inputItem}>
-                        <Text style={styles.label}>Approval Matrix Alias</Text>
+                        <Text style={styles.label}>Feature</Text>
                         <View style={styles.pickerView}>
                             <Picker 
                                 selectedValue={selectedFeature}
@@ -151,7 +153,7 @@ const CreateScreen = ({navigation, route}) => {
                     <View style={styles.line_}></View>
 
                     <InputRange 
-                        label={'Maximum'}
+                        label={'Minimum'}
                         onChangeText={text=>{
                             setMinimum(text)
                         }}
@@ -185,10 +187,10 @@ const CreateScreen = ({navigation, route}) => {
                         {
                             return (
                             <View key={index} style={styles.inputItem} >
-                                <Text style={styles.label}>Approval Matrix Alias</Text>
-                            <View style={styles.pickerView}>
-                                <CustomPicker/>
-                            </View>
+                                <Text style={styles.label}>Approver</Text>
+                                <View style={styles.pickerView}>
+                                    <CustomPicker/>
+                                </View>
                             </View>
                         )}
                     )}
@@ -196,7 +198,7 @@ const CreateScreen = ({navigation, route}) => {
                     <View style={{marginTop: 20}}></View>
 
                     <CustomButton 
-                        label={isUpdate ? 'UPDATE' :'ADD TO LIST'} 
+                        label={isUpdate ? 'UPDATE' : 'ADD TO LIST'} 
                         isValidationOK={isValidationOK}
                         onPress={()=>{
                             addData(approvers)
@@ -212,9 +214,8 @@ const CreateScreen = ({navigation, route}) => {
                             setApprovalNum('')
                         }}
                     />
-                </ScrollView>
             </View>
-            
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -224,7 +225,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     body:{
-        flex: 92,
         paddingHorizontal: 30,
     },
     title:{
@@ -241,10 +241,6 @@ const styles = StyleSheet.create({
         backgroundColor: Color.branding_gray,
         marginTop: 20,
         marginBottom: 40,
-    },
-    scrollView:{
-        marginBottom: 30,
-
     },
     label:{
         color: Color.text_black,

@@ -6,7 +6,7 @@ import ItemApproval from './ItemApproval'
 import * as Method from '../utils/Method'
 import { SERVER_URL } from '../utils/Constant'
 const ItemFeature = (props) => {
-    const {item, onPress, navigation_} = props
+    const {item, onPress, navigation_, clickDelete} = props
     const [listMatrix, setListMatrix] = useState([])
     const colorSelect = item.isSelected ? Color.branding_orange : Color.branding_gray
     const iconName = item.isSelected ? "chevron-up" : "chevron-down"
@@ -21,16 +21,7 @@ const ItemFeature = (props) => {
         }
     }
 
-    const deleteApprovalMatrix = async (id) => {
-        try{
-            await Method.makeRequest(SERVER_URL+`matrix/delete.php`,'DELETE',{
-                id_matrix: id
-            }).then(loadMatrixByFeatureId(item.id))
-        }
-        catch(e){
-            console.log('Error:',e)
-        }   
-    }
+
 
     useEffect(()=>{
         if(item.isSelected){
@@ -59,7 +50,7 @@ const ItemFeature = (props) => {
                     data={listMatrix}
                     keyExtractor={(itemApproval) => itemApproval.id}
                     renderItem={({item, index})=>{
-                            return <ItemApproval navigation_={navigation_} delete={deleteApprovalMatrix} itemApproval={item}/>
+                            return <ItemApproval navigation_={navigation_} itemApproval={item} clickDelete={clickDelete}/>
                         }    
                     }
                 />
