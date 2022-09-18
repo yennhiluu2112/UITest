@@ -16,14 +16,13 @@ const HomeScreen = ({navigation}) => {
         catch(e){
             console.log('Error:',e)
         }
-        
     }
     useEffect(()=>{
         loadFeatures()
     },[])
 
     return (
-        <SafeAreaView style={styles.container}>
+            <SafeAreaView style={styles.container}>
             <UIHeader/>
             <View style={styles.bodyContainer}>
                 <View style={styles.body}>
@@ -40,6 +39,7 @@ const HomeScreen = ({navigation}) => {
                         keyExtractor={(item) => item.id}
                         renderItem={({item, index})=>
                             <ItemFeature 
+                                navigation_={navigation}
                                 item={item}
                                 onPress={()=>{
                                     let newFeatures = features.map(eachFeature => {
@@ -59,7 +59,8 @@ const HomeScreen = ({navigation}) => {
                    
                 </View>
             </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        
     )
 }
 

@@ -7,16 +7,25 @@ import * as Method from '../utils/Method'
 
 const ItemApproval = (props) => {
     const item = props.itemApproval
-    const [approvers, setApprovers] = useState()
+    const deleteMatrix = props.delete
+    const navigation = props.navigation_
+    const [approvers, setApprovers] = useState()    
+
     const loadApprovers = async (id) => {
         try{
-            const resp = await Method.makeRequest(SERVER_URL+`approvalmatrix/getListByMatrixId.php?id_matrix=${id}`,'GET',null)
+            const resp = await Method.makeRequest(SERVER_URL+`approval/getListByMatrixId.php?id_matrix=${id}`,'GET',null)
             setApprovers(resp.data)
         }
         catch(e){
             console.log('Error:',e)
         }   
     }
+
+    const navigateUpdate = (itemUpdate) => {
+        navigation.navigate('CreateScreen', {itemUpdate})
+    }
+
+
     useEffect(()=>{
         loadApprovers(item.id)
     }, [item])
@@ -54,6 +63,22 @@ const ItemApproval = (props) => {
                     </View>
             }
             />
+            <View style={{flexDirection:'row', justifyContent: 'flex-end'}}>
+                <TouchableOpacity 
+                    style={styles.otherBtn}
+                    onPress={()=>navigateUpdate(item)}>
+                    <Icon name='create-outline' size={23} color={Color.branding_blue}/>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={styles.otherBtn}
+                    onPress={()=>{
+                        deleteMatrix(item.id)
+                    }}
+                >
+                    <Icon name='trash-outline' size={23} color={'red'}/>
+                </TouchableOpacity>
+            </View>
+
         </View>
     </View>
     )
@@ -120,6 +145,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 15,
         flex: 10,
+    },
+    otherBtn:{
+        paddingStart: 10
     }
 
 })
