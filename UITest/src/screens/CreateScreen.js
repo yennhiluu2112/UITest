@@ -7,15 +7,18 @@ import * as Method from '../utils/Method'
 import { SERVER_URL } from '../utils/Constant'
 
 const CreateScreen = ({navigation, route}) => {
-    const {itemUpdate} = route.params
-    const [name, setName] = useState(itemUpdate ? itemUpdate.name_matrix : '')
-    const [minimum, setMinimum] = useState(itemUpdate ? itemUpdate.minimum_range : '')
-    const [maximum, setMaximum] = useState(itemUpdate ? itemUpdate.maximum_range : '')
-    const [approvalNum, setApprovalNum] = useState(itemUpdate ? itemUpdate.approval_number : '')
+    const [isUpdate, setUpdate] = useState(false)
+    const [id, setId] = useState('')
+    const [approvalNum, setApprovalNum] = useState('')
+    const [name, setName] = useState('')
+    const [minimum, setMinimum] = useState('')
+    const [maximum, setMaximum] = useState('')
+
     const [errorName, setErrorName] = useState('')
     const [errorMaximum, setErrorMaximum] = useState('')
     const [errorApprovalNum, setErrorApprovalNum] = useState('')
-    const [selectedFeature, setSelectedFeature] = useState(itemUpdate ? itemUpdate.feature : '')
+
+    const [selectedFeature, setSelectedFeature] = useState('')
     const [features, setFeatures] = useState([])
     const [number, setNumber] = useState([])
     const [approvers, setApprovers] = useState()
@@ -34,24 +37,39 @@ const CreateScreen = ({navigation, route}) => {
 
     const addData = async (approvers) => {
         try{
-            const resp1 = await Method.makeRequest(SERVER_URL+'matrix/create.php','POST',
-            {
-                name : name,
-                minimum : minimum,
-                maximum : maximum,
-                approval_number : approvalNum,
-                feature: selectedFeature.id,
-                id_approvals: approvers
-            })
-
-            const resp2 = await Method.makeRequest(SERVER_URL+'approvalmatrix/create.php','POST',
-            {
-                id_approval: id_approval
-            })
-
-            if(resp1.message=='success' && resp2.message=='success'){
-                alert('Successfully created matrix')
+            if(!isUpdate){
+                const resp = await Method.makeRequest(SERVER_URL+'matrix/create.php','POST',
+                {
+                    name : name,
+                    minimum : minimum,
+                    maximum : maximum,
+                    approval_number : approvalNum,
+                    feature: selectedFeature.id,
+                    id_approvals: approvers
+                })
+                if(resp.message=='success'){
+                    alert('Successfully created matrix')
+                    setName('')
+                    setMinimum('')
+                    setMaximum('')
+                    setApprovalNum('')
+                }
             }
+            else{
+                const resp = await Method.makeRequest(SERVER_URL+'matrix/update.php','POST',
+                {
+                    id_matrix:id,
+                    name : name,
+                    minimum : minimum,
+                    maximum : maximum,
+                    approval_number : approvalNum,
+                    feature: selectedFeature.id,
+                })
+                if(resp.message=='success'){
+                    alert('Successfully updated matrix')
+                }
+            }
+            
         }
         catch(e){
             console.log('Error:',e)
@@ -60,6 +78,27 @@ const CreateScreen = ({navigation, route}) => {
 
     useEffect(()=>{
         loadData()
+        try{
+            const {itemUpdate} = route.params
+            if (itemUpdate){
+                setId(itemUpdate.id)
+                setUpdate(true)
+                setName(itemUpdate.name_matrix)
+                setMinimum(itemUpdate.minimum_range)
+                setMaximum(itemUpdate.maximum_range)
+                setApprovalNum(itemUpdate.approval_number)   
+                features.map(item=>{
+                    if(item.id == itemUpdate.feature){
+                        setSelectedFeature(item)
+                    }
+                })   
+            }
+        }
+        catch(e){
+            console.log('Error:',e)
+        }
+
+
     },[])
 
     useEffect(()=>{
@@ -70,21 +109,13 @@ const CreateScreen = ({navigation, route}) => {
         setNumber(list)
     },[approvalNum])
 
-    // useEffect(()=>{
-    //     const list=[]
-    //     list.push(selectedValue)
-    //     setApprovers(list)
-    //     //setApprovers([...approvers,selectedValue])
-    //     console.log(approvers)
-    // },[selectedValue])
-
     return (
         <SafeAreaView style={styles.container}>
             <UIHeader 
                 iconShow={true}
                 iconPress={()=>navigation.navigate("HomeScreen")}/>
             <View style={styles.body}>
-                <Text style={styles.title}>Create New Approval Matrix</Text>
+                <Text style={styles.title}>{isUpdate ? "Update" : "Create New"} Approval Matrix</Text>
                 <View style={styles.line}></View>
 
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
@@ -93,10 +124,9 @@ const CreateScreen = ({navigation, route}) => {
                         placeholder={'Input Matrix Name'}
                         value={name}
                         onChangeText={text=>{
-                            setErrorName(text.length>0 ? 
+                            setErrorName(text.length >0? 
                                 '' : 'Please enter matrix name')
                             setName(text)
-                            
                         }}
                         
                     />
@@ -142,48 +172,22 @@ const CreateScreen = ({navigation, route}) => {
                     <InputField 
                         label={'Number of Approval'} 
                         placeholder={'Input Number'}
+                        value={approvalNum}
                         onChangeText={text=>{
                             setErrorApprovalNum(text>0 ? 
                                 '' : 'Approval number must be higher than 0')
                             setApprovalNum(text)
-                            
                         }}
-                        value={approvalNum}
                         keyboardType={'numeric'}/>
                     <Text style={styles.errorText}>{errorApprovalNum}</Text>
 
-                    {approvalNum && number.map(({item,index}) => 
+                    {approvalNum>0 && number.map(({item,index}) => 
                         {
                             return (
                             <View key={index} style={styles.inputItem} >
                                 <Text style={styles.label}>Approval Matrix Alias</Text>
                             <View style={styles.pickerView}>
-                                <CustomPicker addApprovers={(newApproval, index)=>{
-                                    if (approvers){
-                                        let newApprovers = approvers.map(each => {
-                                            if (index == each.index){
-                                                return {...each, id_approval: newApproval}
-                                            }
-                                            else{
-                                                newApprovers.push({
-                                                    index: index,
-                                                    id_approval: newApproval,
-                                                })
-                                            }
-                                        })
-                                        setApprovers(newApprovers)
-                                    }
-                                    else{
-                                        if(newApproval){
-                                            setApprovers([...approvers, {
-                                                index: index,
-                                                id_approval: newApproval,
-                                            }])
-                                        }
-                                    }
-                                    
-                                    console.log(approvers)
-                                }}/>
+                                <CustomPicker/>
                             </View>
                             </View>
                         )}
@@ -192,7 +196,7 @@ const CreateScreen = ({navigation, route}) => {
                     <View style={{marginTop: 20}}></View>
 
                     <CustomButton 
-                        label={'ADD TO LIST'} 
+                        label={isUpdate ? 'UPDATE' :'ADD TO LIST'} 
                         isValidationOK={isValidationOK}
                         onPress={()=>{
                             addData(approvers)

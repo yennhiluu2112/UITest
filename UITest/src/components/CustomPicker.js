@@ -6,7 +6,6 @@ import { SERVER_URL } from '../utils/Constant'
 import { Picker } from '@react-native-picker/picker'
 
 const CustomPicker = (props) => {
-    const {addApprovers} = props
     const [approvals, setApprovals] = useState([])
     const [selectedValue, setSelectedValue] = useState()
     const [index, setIndex]=useState(0)
@@ -25,12 +24,6 @@ const CustomPicker = (props) => {
     useEffect(()=>{
         loadData()
     },[])
-
-    useEffect(()=>{
-        if(selectedValue!=null){
-            addApprovers(selectedValue, index)
-        }
-    },[selectedValue])
 
     return (
          <Picker 

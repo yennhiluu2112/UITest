@@ -21,7 +21,7 @@ const ItemApproval = (props) => {
         }   
     }
 
-    const navigateUpdate = (itemUpdate) => {
+    const navigateUpdate = (itemUpdate, approvalNumber) => {
         navigation.navigate('CreateScreen', {itemUpdate})
     }
 
