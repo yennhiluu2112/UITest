@@ -3,13 +3,19 @@ import { View , Text, StyleSheet, SafeAreaView, TextInput, ScrollView, Touchable
 import Color from '../utils/Color'
 
 const InputRange = (props) => {
-    const {label} = props
+    const {label, ...rest} = props
     return (
         <View style={styles.inputItem}>
             <Text style={styles.label}>Range Of Approval ({label})</Text>
             <View style={styles.inputView}> 
                     <Text style={styles.smallText}>IDR</Text>
-                    <TextInput style={styles.textInput} placeholder='Input Text Here' placeholderTextColor={Color.branding_gray}/>
+                    <TextInput 
+                        style={styles.textInput} 
+                        placeholder='Input Text Here' 
+                        placeholderTextColor={Color.branding_gray}
+                        {...rest}
+                        keyboardType='numeric'
+                    />
                 
             </View>
         </View>
@@ -22,9 +28,6 @@ const styles = StyleSheet.create({
         color: Color.text_black,
         fontSize: 15,
         fontWeight: '400'
-    },
-    inputItem:{
-        marginBottom: 44,
     },
     inputView:{
         borderRadius: 15,

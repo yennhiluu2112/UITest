@@ -3,12 +3,17 @@ import { View , Text, StyleSheet, SafeAreaView, TextInput, ScrollView, Touchable
 import Color from '../utils/Color'
 
 const InputField = (props) => {
-    const {label, placeholder} = props
+    const {label, placeholder, ...rest} = props
     return (
         <View style={styles.inputItem}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.inputView}>
-                <TextInput style={styles.textInput} placeholder={placeholder} placeholderTextColor={Color.branding_gray}/>
+                <TextInput 
+                    style={styles.textInput} 
+                    placeholder={placeholder} 
+                    placeholderTextColor={Color.branding_gray}
+                    {...rest}
+                />
             </View>
         </View>
     )
@@ -21,7 +26,6 @@ const styles = StyleSheet.create({
         fontWeight: '400'
     },
     inputItem:{
-        marginBottom: 44,
     },
     inputView:{
         borderRadius: 15,
