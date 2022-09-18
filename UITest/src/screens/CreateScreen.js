@@ -209,7 +209,7 @@ const CreateScreen = ({navigation, route}) => {
                         <TouchableOpacity 
                             style={styles.inputView}
                             onPress={()=>{setVisible(true)}}>
-                            <Text style={styles.text} numberOfLines={1}>SELECT APPROVER</Text>
+                            <Text style={styles.text} numberOfLines={1}>{selected.length>0 ? selected.length+' APPROVERS' : 'SELECT APPROVER'}</Text>
                         </TouchableOpacity>
                     </View>
                     

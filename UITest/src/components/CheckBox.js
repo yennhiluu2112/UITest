@@ -72,9 +72,10 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
     },
     smallContainer: {
+        width: '80%',
         flexDirection: 'row',
         marginTop: 7,
-        alignItems: 'center',
+        alignItems: 'flex-start',
     },
     itemText: {
         fontSize: 15,
