@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color' 
-import { SERVER_URL } from '../utils/Constant'
+import { SERVER_URL, WIDTH } from '../utils/Constant'
 import * as Method from '../utils/Method'
 
 const ItemApproval = (props) => {
@@ -87,7 +87,7 @@ const ItemApproval = (props) => {
 
 const styles = StyleSheet.create({
     approvalContainer:{
-        width: '100%',
+        width: WIDTH*0.8,
         marginBottom: 10,
     },
     approvalItem:{
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     titleRange:{
+        width: WIDTH*0.3,
         fontSize: 12,
         fontWeight:'400',
         color: Color.text_black,

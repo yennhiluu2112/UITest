@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color'
 import ItemApproval from './ItemApproval'
 import * as Method from '../utils/Method'
-import { SERVER_URL } from '../utils/Constant'
+import { SERVER_URL, WIDTH } from '../utils/Constant'
 const ItemFeature = (props) => {
     const {item, onPress, navigation_, clickDelete, route} = props
     const [listMatrix, setListMatrix] = useState([])
@@ -20,8 +20,6 @@ const ItemFeature = (props) => {
             console.log('Error:',e)
         }
     }
-
-
 
     useEffect(()=>{
         if(item.isSelected){
@@ -64,7 +62,7 @@ const ItemFeature = (props) => {
 
 const styles = StyleSheet.create({
     featureContainer:{
-        width: '100%',
+        width: WIDTH*0.8,
         marginBottom: 20,
     },
     featureView:{

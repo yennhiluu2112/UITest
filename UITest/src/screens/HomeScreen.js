@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList} from 'react-native'
+import { View , Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList, StatusBar} from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Color from '../utils/Color' 
-import { SERVER_URL } from '../utils/Constant'
+import { SERVER_URL, WIDTH } from '../utils/Constant'
 import { UIHeader, ItemFeature, ItemApproval } from '../components'
 import * as Method from '../utils/Method'
 import ConfirmModal from '../components/ConfirmModal'
@@ -45,16 +45,19 @@ const HomeScreen = ({navigation,route}) => {
 
     return (
             <SafeAreaView style={styles.container}>
+            <StatusBar backgroundColor={Color.branding_orange}/>
             <ConfirmModal visible={modalVisible} setVisible={setModalVisible} listener={listener}/>
             <UIHeader/>
             <View style={styles.bodyContainer}>
                 <View style={styles.body}>
-                    <TouchableOpacity 
-                        style={styles.addButton}
-                        onPress={()=>{navigation.navigate('CreateScreen',{render:route.params.render})}}>
-                        <Icon name='add-circle' color='white' size={21} style={styles.addIcon}/>
-                        <Text style={styles.addText}>Tambah New Matrix</Text>
-                    </TouchableOpacity>
+                    <View style={styles.btnAddView}>
+                        <TouchableOpacity 
+                            style={styles.addButton}
+                            onPress={()=>{navigation.navigate('CreateScreen',{render:route.params.render})}}>
+                            <Icon name='add-circle' color='white' size={21} style={styles.addIcon}/>
+                            <Text style={styles.addText}>Tambah New Matrix</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={styles.line}></View>
                     <FlatList 
                         clickDelete={clickDelete}
@@ -93,10 +96,10 @@ const HomeScreen = ({navigation,route}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Color.branding_orange,
+        backgroundColor: 'white',
     },
     bodyContainer:{
-        flex: 92,
+        flex: 1,
         backgroundColor: Color.branding_orange    
     },
     body:{
@@ -107,6 +110,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         flexDirection: 'column',
         alignItems: 'center',
+    },
+    btnAddView:{
+        width: WIDTH*0.8
     },
     addButton:{
         backgroundColor: '#171C8F',

@@ -118,7 +118,6 @@ const CreateScreen = ({navigation, route}) => {
                     }
                 })
                 loadApprovers(itemUpdate.id)
-                console.log('Selected: ', selected)   
             } 
         }
         catch(e){

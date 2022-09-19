@@ -21,7 +21,7 @@ const UIHeader = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: HEIGHT*0.09,
+        height: HEIGHT*0.08,
         backgroundColor: Color.branding_orange,
         justifyContent: 'center',
         alignItems: 'center',
